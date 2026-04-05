@@ -1,0 +1,50 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "s-maxage=86400"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[context.production.environment]
+  NEXT_PUBLIC_WORDPRESS_URL = "@wordpress-url"
+  NEXT_PUBLIC_WOOCOMMERCE_URL = "@woocommerce-url"
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "@stripe-publishable-key"
+  STRIPE_SECRET_KEY = "@stripe-secret-key"
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY = "@recaptcha-site-key"
+  RECAPTCHA_SECRET_KEY = "@recaptcha-secret-key"
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_WORDPRESS_URL = "@wordpress-url"
+  NEXT_PUBLIC_WOOCOMMERCE_URL = "@woocommerce-url"
