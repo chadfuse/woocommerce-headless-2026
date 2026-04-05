@@ -177,10 +177,6 @@ npm run type-check   # Run TypeScript checks
 3. **Environment Variables**
    Configure in Render dashboard
 
-4. **Deploy**
-   - Automatic deployment on git push
-   - Preview deployments available
-
 ### Manual Deployment
 
 ```bash
@@ -291,8 +287,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support and questions:
 - Create an issue on GitHub
-- Check the [documentation](./docs/)
-- Review the [development guidelines](./DEVELOPMENT_GUIDELINES.md)
+- Review the development guidelines
+- Check the troubleshooting section
 
 ## 🎯 Roadmap
 

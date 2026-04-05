@@ -1,10 +1,8 @@
-# Headless Store Development Guidelines
+# Development Guidelines - WooCommerce Headless Store
 
 > **Last Updated:** 2026-04-05  
 > **Version:** 1.1.0  
 > **Project:** WooCommerce Headless Store
-> 
-> **🚀 Recent Updates:** Added React Query for improved data fetching (parallel to existing system) + WooCommerce payment integration with real payment methods + Enhanced customer creation error handling + Login flow for existing customers + WordPress email integration for password reset + Smart authentication detection (no unnecessary login redirects) + Auto-fill checkout forms for logged-in customers + Smart order confirmation messages (no "Account Created!" for existing customers) + Complete account page with real customer data, order history, and address management
 
 ---
 
@@ -15,7 +13,7 @@
 - **Language:** TypeScript
 - **Styling:** TailwindCSS + shadcn/ui components
 - **State Management:** Zustand
-- **Data Fetching:** React Query (NEW) + Manual Fetch (Existing)
+- **Data Fetching:** Custom hooks + WooCommerce REST API
 - **Forms:** React Hook Form + Zod validation
 - **Notifications:** Sonner
 - **Icons:** Lucide React
@@ -32,15 +30,17 @@
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── (routes)/           # Dynamic routes
+│   ├── (templates)/        # Template-based pages
 │   ├── account/           # Customer account pages
 │   ├── checkout/          # Checkout flow
-│   ├── forgot-password/    # Password reset page (NEW)
-│   ├── login/             # Customer login page (NEW)
+│   ├── forgot-password/    # Password reset page
+│   ├── login/             # Customer login page
 │   ├── products/          # Product listings & details
 │   └── layout.tsx         # Root layout
 ├── components/
 │   ├── ui/                # shadcn/ui base components
+│   ├── templates/        # Page templates
+│   ├── sections/         # Reusable sections
 │   ├── ProductCard.tsx    # Product grid item
 │   ├── CartDrawer.tsx     # Shopping cart sidebar
 │   ├── CartIcon.tsx       # Header cart button
@@ -48,6 +48,314 @@ src/
 │   └── Header.tsx         # Reusable page header
 ├── hooks/
 │   ├── useWooCommerce.ts  # API data fetching hooks
+│   └── useCustomerOrders.ts # Customer order history
+├── lib/
+│   ├── woocommerce.ts     # WooCommerce API client
+│   ├── wordpressAuth.ts    # WordPress authentication
+│   ├── errorLogger.ts     # Error logging utility
+│   └── utils.ts           # Helper functions
+├── store/
+│   ├── cartStore.ts       # Shopping cart state
+│   ├── customerStore.ts    # Customer data state
+│   └── checkoutStore.ts   # Checkout flow state
+└── types/
+    └── woocommerce.ts     # TypeScript type definitions
+```
+
+---
+
+## 📋 **Component Rules**
+
+### **✅ Do's**
+- **Use shadcn/ui components** as base components
+- **Follow TypeScript strict mode** - all types must be defined
+- **Use semantic HTML5** tags for accessibility
+- **Implement proper error boundaries** for error handling
+- **Use TailwindCSS classes** for styling (no inline styles)
+- **Follow React hooks rules** - only call hooks at top level
+- **Use proper key props** in lists for performance
+- **Implement loading states** for better UX
+- **Use proper form validation** with React Hook Form + Zod
+- **Follow the template system** for consistent page structure
+
+### **❌ Don'ts**
+- **Don't use Next.js Image component** - use regular `<img>` tags
+- **Don't use inline styles** - use TailwindCSS classes only
+- **Don't ignore TypeScript errors** - fix all type issues
+- **Don't use any type** - define proper interfaces
+- **Don't commit sensitive data** - use environment variables
+- **Don't forget error handling** - wrap async operations
+- **Don't use console.log in production** - use proper logging
+- **Don't ignore accessibility** - test with screen readers
+- **Don't break the template structure** - follow established patterns
+
+---
+
+## 🎨 **Design System Rules**
+
+### **Color Usage**
+```css
+/* Primary Colors - Use these variables */
+--primary: oklch(0.55 0.2 240);      /* Main brand color */
+--secondary: oklch(0.97 0.01 240);   /* Secondary color */
+--muted: oklch(0.94 0.02 240);       /* Muted backgrounds */
+
+/* Semantic Colors */
+--destructive: oklch(0.6 0.2 20);    /* Error states */
+--success: oklch(0.65 0.15 145);      /* Success states */
+--warning: oklch(0.75 0.15 60);      /* Warning states */
+```
+
+### **Typography**
+- **Font Family:** Inter (system-ui fallback)
+- **Headings:** Use `text-2xl` to `text-6xl` classes
+- **Body Text:** Use `text-sm` to `text-lg` classes
+- **Font Weights:** `font-normal`, `font-medium`, `font-semibold`, `font-bold`
+
+### **Spacing**
+- **Use Tailwind spacing scale:** `p-4`, `m-8`, `gap-6`, etc.
+- **Consistent padding:** `p-4` for cards, `p-6` for sections
+- **Responsive spacing:** Use `sm:p-4 md:p-6 lg:p-8` pattern
+
+---
+
+## 🔧 **State Management Patterns**
+
+### **Zustand Store Structure**
+```typescript
+// Example: Cart Store
+interface CartStore {
+  items: CartItem[]
+  total: number
+  subtotal: number
+  isLoading: boolean
+  
+  // Actions
+  addItem: (product: WooCommerceProduct) => void
+  removeItem: (productId: number) => void
+  updateQuantity: (productId: number, quantity: number) => void
+  clearCart: () => void
+}
+```
+
+### **Local State Management**
+- **Use useState** for component-local state
+- **Use useEffect** for side effects and API calls
+- **Use useCallback** for memoized functions
+- **Use useMemo** for expensive calculations
+
+---
+
+## 🌐 **API Integration Rules**
+
+### **WooCommerce API**
+```typescript
+// Correct API call pattern
+const { products, loading, error } = useProducts({
+  per_page: 12,
+  page: currentPage,
+  category: selectedCategory
+})
+
+// Error handling
+if (error) {
+  toast.error('Failed to load products')
+  return null
+}
+```
+
+### **Error Handling**
+- **Always handle loading states**
+- **Show user-friendly error messages**
+- **Log errors for debugging**
+- **Implement retry logic for critical operations**
+- **Use toast notifications** for user feedback
+
+---
+
+## 📝 **Form Patterns**
+
+### **React Hook Form + Zod**
+```typescript
+// Schema definition
+const checkoutSchema = z.object({
+  first_name: z.string().min(1, 'First name is required'),
+  email: z.string().email('Invalid email address'),
+  // ... other fields
+})
+
+// Form usage
+const { register, handleSubmit, formState: { errors } } = useForm<CheckoutFormData>({
+  resolver: zodResolver(checkoutSchema)
+})
+```
+
+### **Validation Rules**
+- **Client-side validation** for immediate feedback
+- **Server-side validation** for security
+- **Clear error messages** for users
+- **Accessible error indicators** with proper ARIA labels
+
+---
+
+## 🎯 **Performance Guidelines**
+
+### **Code Splitting**
+- **Use dynamic imports** for large components
+- **Lazy load images** with proper loading states
+- **Optimize bundle size** with tree shaking
+- **Use Next.js built-in optimizations**
+
+### **Image Optimization**
+```typescript
+// Correct image usage
+<img
+  src={product.image.src}
+  alt={product.image.alt || product.name}
+  className="w-full h-full object-cover"
+  loading="lazy"
+  onError={(e) => {
+    // Handle image errors
+  }}
+/>
+```
+
+---
+
+## 🔒 **Security Best Practices**
+
+### **Environment Variables**
+```env
+# Public variables (accessible in browser)
+NEXT_PUBLIC_WORDPRESS_URL=https://your-site.com
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# Private variables (server-only)
+WOOCOMMERCE_CONSUMER_SECRET=cs_...
+STRIPE_SECRET_KEY=sk_...
+```
+
+### **Data Validation**
+- **Validate all user inputs** on both client and server
+- **Sanitize data** before API calls
+- **Use HTTPS** for all API requests
+- **Never expose secrets** in client-side code
+
+---
+
+## 🧪 **Testing Guidelines**
+
+### **Pre-Commit Checklist**
+- [ ] **TypeScript compilation** passes (`npm run build`)
+- [ ] **No console errors** in browser
+- [ ] **All forms validate** correctly
+- [ ] **Loading states** display properly
+- [ ] **Error handling** works for all scenarios
+- [ ] **Responsive design** works on mobile/tablet/desktop
+- [ ] **Accessibility** features work (keyboard navigation, screen readers)
+- [ ] **Performance** is acceptable (load times, animations)
+
+### **Common Issues to Check**
+- **Select components** handle null values properly
+- **API calls** have proper error handling
+- **Forms** don't submit with invalid data
+- **Images** have proper alt text and error handling
+- **Navigation** works correctly on all pages
+
+---
+
+## 🚀 **Deployment Rules**
+
+### **Environment Setup**
+- **Never commit .env files** to Git
+- **Use different environments** for development/staging/production
+- **Test all environment variables** before deployment
+- **Use proper build commands** for each platform
+
+### **Build Verification**
+```bash
+# Always run before deployment
+npm run build
+npm run start  # Test production build locally
+```
+
+---
+
+## 🔄 **Common Patterns**
+
+### **Product Card Component**
+```typescript
+// Standard ProductCard props
+interface ProductCardProps {
+  product: WooCommerceProduct
+  viewMode?: 'grid' | 'list'
+  onAddToCart?: (product: WooCommerceProduct) => void
+}
+
+// Standard usage
+<ProductCard
+  product={product}
+  viewMode="grid"
+  onAddToCart={handleAddToCart}
+/>
+```
+
+### **Template Usage**
+```typescript
+// Standard page template
+export default function ProductsPage() {
+  return (
+    <CommerceTemplate
+      title="Products"
+      filters={<Filters />}
+      sortBy={<SortBy />}
+    >
+      <ProductGridSection products={products} />
+    </CommerceTemplate>
+  )
+}
+```
+
+---
+
+## 🆘 **Troubleshooting**
+
+### **Common TypeScript Errors**
+- **"string | null" not assignable**: Add null fallback (`value || ''`)
+- **"Property does not exist":** Check type definitions
+- **"Argument of type never":** Check generic type constraints
+
+### **Common Runtime Errors**
+- **API 401 errors**: Check WooCommerce API keys
+- **CORS issues**: Verify WordPress CORS settings
+- **Build failures**: Check environment variables and dependencies
+
+### **Debugging Tips**
+- **Use browser dev tools** for network inspection
+- **Check console** for JavaScript errors
+- **Verify API responses** in Network tab
+- **Test with different user roles** and permissions
+
+---
+
+## 📈 **Code Quality**
+
+### **ESLint Rules**
+- **No unused variables**
+- **No console.log in production**
+- **Proper TypeScript types**
+- **Consistent code formatting**
+
+### **Best Practices**
+- **Write readable, self-documenting code**
+- **Use meaningful variable names**
+- **Keep components small and focused**
+- **Follow React best practices**
+- **Implement proper error boundaries**
+
+---
+
+**Follow these guidelines to ensure consistent, high-quality code across the project!**
 │   └── useProductsQuery.ts # React Query hooks (NEW)
 ├── lib/
 │   ├── checkoutSchema.ts  # Form validation schemas
