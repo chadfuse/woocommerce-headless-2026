@@ -400,7 +400,7 @@ export default function CheckoutPage() {
               {/* Payment Method */}
               <PaymentMethods 
                 value={watch('payment_method')} 
-                onValueChange={(value) => setValue('payment_method', value)}
+                onValueChange={(value) => setValue('payment_method', value || '')}
               />
               {errors.payment_method && (
                 <p className="text-red-500 text-sm mt-1">{errors.payment_method.message}</p>

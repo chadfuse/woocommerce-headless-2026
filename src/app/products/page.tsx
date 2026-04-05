@@ -133,7 +133,7 @@ export default function ProductsPage() {
   )
 
   const SortBy = (
-    <Select value={sortBy} onValueChange={(value) => setSortBy(value)}>
+    <Select value={sortBy} onValueChange={(value) => setSortBy(value || 'date_desc')}>
       <SelectTrigger className="w-48">
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
