@@ -162,6 +162,25 @@ npm run type-check   # Run TypeScript checks
 3. **Environment Variables**
    Configure in Netlify dashboard
 
+### Render
+
+1. **Connect to Render**
+   - Push to GitHub
+   - Import repository in Render dashboard
+   - Choose "Web Service" or "Static Site"
+
+2. **Configure Build Settings**
+   - Build command: `npm run build`
+   - Start command: `npm start`
+   - Runtime: Node 18
+
+3. **Environment Variables**
+   Configure in Render dashboard
+
+4. **Deploy**
+   - Automatic deployment on git push
+   - Preview deployments available
+
 ### Manual Deployment
 
 ```bash

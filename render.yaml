@@ -1,0 +1,59 @@
+services:
+  # Web Service
+  - type: web
+    name: woocommerce-headless-store
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: NPM_VERSION
+        value: 9
+      - key: NEXT_PUBLIC_WORDPRESS_URL
+        sync: false
+      - key: NEXT_PUBLIC_WOOCOMMERCE_URL
+        sync: false
+      - key: WOOCOMMERCE_CONSUMER_KEY
+        sync: false
+      - key: WOOCOMMERCE_CONSUMER_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+        sync: false
+      - key: RECAPTCHA_SECRET_KEY
+        sync: false
+
+  # Static Site (Alternative option)
+  - type: web
+    name: woocommerce-headless-store-static
+    env: static
+    plan: free
+    buildCommand: npm run build && npm run export
+    staticPublishPath: out
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: NPM_VERSION
+        value: 9
+      - key: NEXT_PUBLIC_WORDPRESS_URL
+        sync: false
+      - key: NEXT_PUBLIC_WOOCOMMERCE_URL
+        sync: false
+      - key: WOOCOMMERCE_CONSUMER_KEY
+        sync: false
+      - key: WOOCOMMERCE_CONSUMER_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+        sync: false
+      - key: RECAPTCHA_SECRET_KEY
+        sync: false

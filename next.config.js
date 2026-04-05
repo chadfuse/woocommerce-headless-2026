@@ -21,6 +21,10 @@ const nextConfig = {
   // Static optimization
   trailingSlash: false,
   
+  // Static export configuration for Render
+  output: process.env.NODE_ENV === 'production' && process.env.RENDER_STATIC === 'true' ? 'export' : undefined,
+  distDir: process.env.NODE_ENV === 'production' && process.env.RENDER_STATIC === 'true' ? 'out' : '.next',
+  
   // Headers for caching and security
   async headers() {
     return [

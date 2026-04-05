@@ -85,7 +85,59 @@
 
 ---
 
-### **Option 3: Manual Deployment**
+### **Option 3: Render**
+**Best for:** Simple deployment, Docker support, static sites
+
+#### **Steps:**
+1. **Visit Render Dashboard**
+   - Go to [render.com](https://render.com)
+   - Sign in with GitHub account
+
+2. **Import Repository**
+   - Click "New +" → "Web Service"
+   - Choose `chadfuse/woocommerce-headless-2026`
+   - Select "Node" environment
+
+3. **Configure Build Settings**
+   ```
+   Build Command: npm run build
+   Start Command: npm start
+   Runtime: Node 18
+   ```
+
+4. **Configure Environment Variables**
+   ```
+   NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-site.com
+   NEXT_PUBLIC_WOOCOMMERCE_URL=https://your-wordpress-site.com/wp-json/wc/v3
+   WOOCOMMERCE_CONSUMER_KEY=your_consumer_key
+   WOOCOMMERCE_CONSUMER_SECRET=your_consumer_secret
+   ```
+
+5. **Deploy**
+   - Click "Create Web Service"
+   - Wait for build completion
+   - Your site will be live at `https://your-project.onrender.com`
+
+#### **Render Static Site Option:**
+1. **Choose Static Site**
+   - Click "New +" → "Static Site"
+   - Select repository
+   - Set build command: `npm run export`
+   - Set publish directory: `out`
+   - Set environment variable: `RENDER_STATIC=true`
+
+#### **Render Features:**
+- ✅ **Automatic HTTPS**
+- ✅ **Global CDN**
+- ✅ **Docker Support**
+- ✅ **Custom Domains**
+- ✅ **Environment Variables**
+- ✅ **Auto-Deploy on Git Push**
+- ✅ **Preview Deployments**
+
+---
+
+### **Option 4: Manual Deployment**
 **Best for:** Custom servers, full control
 
 #### **Steps:**
