@@ -75,14 +75,13 @@ export default function HomePage() {
       title="Welcome to Our Store"
       description="Discover amazing products at great prices"
       hero={{
-        title: "Transform Your Space with Premium Products",
-        subtitle: "Quality That Speaks for Itself",
-        description: "Discover our curated collection of premium products designed to elevate your lifestyle. From contemporary essentials to timeless classics, we bring you the best in modern living.",
-        image: "https://images.unsplash.com/photo-1600607687936-ce28c6316846?w=1920&h=1080&fit=crop&crop=center",
+        title: "Premium Products for Modern Living",
+        subtitle: "Quality meets affordability",
+        description: "Discover our curated selection of premium products designed to enhance your lifestyle. From everyday essentials to unique finds, we have something for everyone.",
         cta: {
           children: (
             <>
-              Explore Collection
+              Shop Now
               <ArrowRight className="ml-2 h-4 w-4" />
             </>
           ),
@@ -90,13 +89,13 @@ export default function HomePage() {
           variant: "default",
           size: "lg"
         },
-        background: "dark",
+        background: "gradient",
         size: "large",
         badge: {
-          text: "Limited Time Offer",
-          variant: "destructive"
+          text: "New Collection 2026",
+          variant: "secondary"
         },
-        alignment: "center"
+        alignment: "left"
       }}
       sections={[
         {
