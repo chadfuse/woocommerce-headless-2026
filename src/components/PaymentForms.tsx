@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { CreditCard, Lock, User } from 'lucide-react'
 
 interface PaymentFormsProps {
-  selectedMethod: 'cod' | 'bacs' | 'cheque' | 'stripe' | 'paypal'
+  selectedMethod: string
 }
 
 export function PaymentForms({ selectedMethod }: PaymentFormsProps) {
@@ -245,10 +245,42 @@ export function PaymentForms({ selectedMethod }: PaymentFormsProps) {
     case 'paypal':
       return renderPayPalForm()
     case 'bacs':
+    case 'cheque':
       return renderBankTransferForm()
     case 'cod':
       return renderCashOnDeliveryForm()
+    case 'paymongo':
+      return (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              PayMongo
+            </CardTitle>
+            <CardDescription>
+              Pay securely via PayMongo — cards, GCash, Maya &amp; more
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+              You will be redirected to PayMongo to complete your payment securely.
+            </div>
+          </CardContent>
+        </Card>
+      )
     default:
-      return null
+      return (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              {selectedMethod}
+            </CardTitle>
+            <CardDescription>
+              Complete your payment using the selected method.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )
   }
 }

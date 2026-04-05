@@ -30,9 +30,7 @@ export const checkoutSchema = z.object({
   order_notes: z.string().optional(),
 
   // Payment Method
-  payment_method: z.enum(['cod', 'bacs', 'cheque', 'stripe', 'paypal']).refine((val) => val, {
-    message: 'Payment method is required',
-  }),
+  payment_method: z.string().min(1, 'Payment method is required'),
 
   // Terms
   terms: z.boolean().refine((val) => val === true, {

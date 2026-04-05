@@ -46,6 +46,12 @@ const mockPaymentMethods: PaymentMethod[] = [
     description: 'Pay with PayPal or credit card',
     enabled: true,
   },
+  {
+    id: 'paymongo',
+    title: 'PayMongo',
+    description: 'Pay via PayMongo — cards, GCash, Maya & more',
+    enabled: true,
+  },
 ]
 
 // Real API call function
@@ -76,8 +82,8 @@ async function fetchPaymentMethods(): Promise<PaymentMethod[]> {
 }
 
 interface PaymentMethodsProps {
-  value?: 'cod' | 'bacs' | 'cheque' | 'stripe' | 'paypal'
-  onValueChange?: (value: 'cod' | 'bacs' | 'cheque' | 'stripe' | 'paypal') => void
+  value?: string
+  onValueChange?: (value: string) => void
 }
 
 export function PaymentMethods({ value, onValueChange }: PaymentMethodsProps) {
@@ -170,5 +176,5 @@ export function PaymentMethods({ value, onValueChange }: PaymentMethodsProps) {
 // Helper function to get payment method title
 export function getPaymentMethodTitle(methodId: string): string {
   const method = mockPaymentMethods.find(m => m.id === methodId)
-  return method?.title || 'Payment Method'
+  return method?.title || methodId || 'Payment Method'
 }
