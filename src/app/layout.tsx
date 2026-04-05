@@ -6,6 +6,8 @@ import { Toaster } from "sonner";
 import { Providers } from "./providers";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { ErrorMonitor } from "@/components/ErrorMonitor";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +37,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ErrorBoundary>
           <Providers>
+            <Header variant="dark" />
             {children}
+            <Footer />
             <CartDrawer />
             <Toaster position="top-right" />
             <ErrorMonitor />

@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Brand Colors - Updated to Modern Blue */
-  --color-primary: oklch(0.55 0.2 240);  /* Modern Trust Blue */
+  /* Brand Colors - Forest Green */
+  --color-primary: oklch(0.30 0.09 145);  /* Forest Green */
   --color-primary-foreground: oklch(1 0 0);
   
   /* Update existing colors to match new palette */
@@ -59,7 +59,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.55 0.2 240);
+  --primary: oklch(0.30 0.09 145);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.97 0.01 240);
   --secondary-foreground: oklch(0.3 0.07 240);

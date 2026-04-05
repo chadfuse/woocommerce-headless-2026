@@ -1,7 +1,5 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 
 interface BreadcrumbItem {
@@ -18,8 +16,6 @@ interface PageTemplateProps {
   title?: string
   description?: string
   className?: string
-  showHeader?: boolean
-  showFooter?: boolean
 }
 
 export { type PageTemplateProps }
@@ -33,14 +29,12 @@ export function PageTemplate({
   title,
   description,
   className,
-  showHeader = true,
-  showFooter = true
 }: PageTemplateProps) {
   return (
     <div className={cn("min-h-screen bg-white", className)}>
-      {/* Header */}
-      {showHeader && (header || <Header />)}
-      
+      {/* Custom header override */}
+      {header && header}
+
       {/* Breadcrumbs */}
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav className="border-b border-gray-200 bg-white">
@@ -91,8 +85,8 @@ export function PageTemplate({
         </div>
       </main>
       
-      {/* Footer */}
-      {showFooter && (footer || <Footer />)}
+      {/* Custom footer override */}
+      {footer && footer}
     </div>
   )
 }
